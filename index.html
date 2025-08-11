@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0c0c0c, #1a1a1a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            color: white;
+        }
+        
+        #gameContainer {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+        
+        canvas {
+            border: 3px solid #32FF32;
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(50, 255, 50, 0.5);
+        }
+        
+        #gameInfo {
+            margin-top: 15px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+        }
+        
+        #score {
+            color: #32FF32;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(50, 255, 50, 0.8);
+        }
+        
+        #powerUpStatus {
+            color: #FFD700;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+            min-height: 22px;
+        }
+        
+        #instructions {
+            margin-bottom: 15px;
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .power-up-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        h1 {
+            color: #32FF32;
+            text-shadow: 0 0 15px rgba(50, 255, 50, 0.8);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1>🐍 SNAKE ENHANCED</h1>
+        
+        <div id="instructions">
+            Use arrow keys to move • Collect power-ups for special abilities!
+        </div>
+        
+        <div class="power-up-legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background: #FFD700;"></span>
+                <span>Speed Boost</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #800080;"></span>
+                <span>Ghost Mode</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #FF00FF;"></span>
+                <span>Double Points</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #FFA500;"></span>
+                <span>Shrink</span>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div id="gameInfo">
+            <div>Score: <span id="score">0</span></div>
+            <div id="powerUpStatus"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Game } from './js/game.js';
+
+        class GameUI {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.scoreElement = document.getElementById('score');
+                this.powerUpStatusElement = document.getElementById('powerUpStatus');
+                
+                this.game = new Game(this.canvas);
+                this.updateUI();
+            }
+
+            updateUI() {
+                // Update score
+                this.scoreElement.textContent = this.game.getScore();
+                
+                // Update power-up status
+                const status = this.game.getSnakeStatus();
+                let statusText = '';
+                
+                if (status.ghostMode) statusText += '👻 GHOST MODE ';
+                if (status.doublePoints) statusText += '💎 DOUBLE POINTS ';
+                if (status.speedBoost) statusText += '🚀 SPEED BOOST ';
+                
+                this.powerUpStatusElement.textContent = statusText;
+                
+                // Continue updating
+                requestAnimationFrame(() => this.updateUI());
+            }
+        }
+
+        // Start the game
+        new GameUI();
+    </script>
+</body>
+</html>
